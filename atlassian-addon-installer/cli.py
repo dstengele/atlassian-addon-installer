@@ -52,7 +52,7 @@ class AddonDeployer:
             self.upm_token = addon_response.headers.get("upm-token")
 
             addon_data = addon_response.json()
-        except Exception:
+        except:
             addon_data = {}
 
         for addon in addon_data.get("plugins", []):
@@ -68,7 +68,10 @@ class AddonDeployer:
                 f"https://marketplace.atlassian.com/rest/2/addons/{addon_key}/versions/",
                 params={"offset": item_index, "limit": 50},
             )
-            new_versions_reply.raise_for_status()
+            try:
+                new_versions_reply.raise_for_status()
+            except:
+                return []
 
             new_versions = (
                 new_versions_reply.json().get("_embedded", {}).get("versions", [])
@@ -98,7 +101,8 @@ class AddonDeployer:
         install_url = self.get_download_url(addon_key, addon_version)
 
         if not install_url:
-            raise Exception("Addon version not found")
+            logging.error("Addon or specified version not found")
+            return
 
         logging.info("Downloading addon from marketplace...")
         jar_download_result = requests.get(install_url)
@@ -109,7 +113,7 @@ class AddonDeployer:
             fname = install_url.split("/")[-1]
         addon_file_path = os.path.join(self.tempdir.name, fname)
 
-        logging.info(f"Savin plugin jar to file {addon_file_path}")
+        logging.info(f"Saving plugin jar to file {addon_file_path}")
 
         addon_file = open(addon_file_path, "w+b")
 
@@ -139,7 +143,7 @@ class AddonDeployer:
             if status_result_json.get("done", False):
                 break
             status_progress = status_result_json.get("progress", 0) * 100
-            logging.info(f"Plugin Install not done yet, progress: {status_progress}%")
+            logging.info(f"Plugin Install not done yet, progress: {status_progress:.1f}%")
             time.sleep(5)
 
         logging.info(f"Plugin {addon_key} was successfully installed ")
