@@ -1,0 +1,14 @@
+{
+    "url": "http://localhost:8080/jira",
+
+    "config": [
+        {
+            "key": "com.onresolve.jira.groovy.groovyrunner",
+            "version": "6.58.0"
+        },
+        {
+            "key": "com.decadis.xtools-for-jira",
+            "version": "2.12.0"
+        }
+    ]
+}

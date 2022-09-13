@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "atlassian-addon-installer"
+version = "0.1.0"
+description = ""
+authors = ["Dennis Stengele <dennis@stengele.me>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.28.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+deploy = 'atlassian-addon-installer.cli'
